@@ -736,7 +736,7 @@ RCT_EXPORT_METHOD(requestPermissions:(NSDictionary *)permissions
         UNNotificationAction* stopAction = [UNNotificationAction
               actionWithIdentifier:@"DISMISS_ACTION"
               title:@"DISMISS"
-              options:UNNotificationActionOptionForeground];
+              options:UNNotificationActionOptionNone];
         
         UNNotificationCategory* customCategory = [UNNotificationCategory
             categoryWithIdentifier:@"CUSTOM_ACTIONS"
