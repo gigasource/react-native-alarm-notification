@@ -56,10 +56,11 @@ public class AlarmReceiver extends BroadcastReceiver {
 
                         try {
                             alarm = alarmDB.getAlarm(id);
-                            alarmUtil.snoozeAlarm(alarm);
-                            Log.e(TAG, "alarm snoozed: " + alarm.toString());
 
                             alarmUtil.removeFiredNotification(alarm.getId());
+
+                            alarmUtil.snoozeAlarm(alarm);
+                            Log.e(TAG, "alarm snoozed: " + alarm.toString());
                         } catch (Exception e) {
                             alarmUtil.stopAlarmSound();
                             e.printStackTrace();
@@ -76,6 +77,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                             // emit notification dismissed
                             ANModule.getReactAppContext().getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("OnNotificationDismissed", "{\"id\": \"" + alarm.getId() + "\"}");
 
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
                             alarmUtil.removeFiredNotification(alarm.getId());
                             
                             alarmUtil.cancelAlarm(alarm, false);
