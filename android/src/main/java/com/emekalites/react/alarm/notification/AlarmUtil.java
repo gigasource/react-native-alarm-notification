@@ -404,6 +404,7 @@ class AlarmUtil {
                     .setTicker(alarm.getTicker())
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setAutoCancel(alarm.isAutoCancel())
+                    .setOngoing(true)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setCategory(NotificationCompat.CATEGORY_ALARM)
                     .setSound(null)
