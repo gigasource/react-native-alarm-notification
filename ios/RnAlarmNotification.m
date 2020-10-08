@@ -218,57 +218,57 @@ API_AVAILABLE(ios(10.0)) {
         NSLog(@"loop sound: %@", loopSound);
         NSLog(@"volume sound: %@", volume);
         
-       AVAudioSession *session = [AVAudioSession sharedInstance];
-       [session setCategory:AVAudioSessionCategoryPlayback
-                withOptions:AVAudioSessionCategoryOptionMixWithOthers
-                      error:nil];
-       [session setActive:true error:nil];
-        [session setMode:AVAudioSessionModeDefault error:nil]; // optional
+//        AVAudioSession *session = [AVAudioSession sharedInstance];
+//        [session setCategory:AVAudioSessionCategoryPlayback
+//                 withOptions:AVAudioSessionCategoryOptionMixWithOthers
+//                       error:nil];
+//        [session setActive:true error:nil];
+        //[session setMode:AVAudioSessionModeDefault error:nil]; // optional
         
-       NSError *playerError = nil;
+//        NSError *playerError = nil;
         
-       if([RnAlarmNotification checkStringIsNotEmpty:soundName]){
-           NSLog(@"soundName: %@", soundName);
-
-           NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:soundName];
-
-           NSString* soundPathEscaped = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
-           NSURL *soundUri = [NSURL URLWithString:soundPathEscaped];
-
-           NSLog(@"sound path: %@", soundUri);
-
-           if(player){
-               [player stop];
-               player = nil;
-           }
-
-           player = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUri
-                                                           error:&playerError];
-
-           if(playerError) {
-               NSLog(@"[AppDelegate] audioPlayerError: %@", playerError);
-           } else if (player){
-               @synchronized(self){
-                   player.delegate = (id<AVAudioPlayerDelegate>)self;;
-                   player.enableRate = YES;
-                   [player prepareToPlay];
-
-                   NSLog(@"sound volume: %@", RCTNullIfNil(volume));
-                   // set volume
-                   player.volume = [volume floatValue];
-
-                   NSLog(@"sound loop: %@", loopSound);
-                   // enable/disable loop
-                   if ([loopSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
-                       player.numberOfLoops = -1;
-                   } else {
-                       player.numberOfLoops = 0;
-                   }
-
-                   [player play];
-               }
-           }
-       }
+//        if([RnAlarmNotification checkStringIsNotEmpty:soundName]){
+//            NSLog(@"soundName: %@", soundName);
+//
+//            NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:soundName];
+//
+//            NSString* soundPathEscaped = [path stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
+//            NSURL *soundUri = [NSURL URLWithString:soundPathEscaped];
+//
+//            NSLog(@"sound path: %@", soundUri);
+//
+//            if(player){
+//                [player stop];
+//                player = nil;
+//            }
+//
+//            player = [[AVAudioPlayer alloc] initWithContentsOfURL:soundUri
+//                                                            error:&playerError];
+//
+//            if(playerError) {
+//                NSLog(@"[AppDelegate] audioPlayerError: %@", playerError);
+//            } else if (player){
+//                @synchronized(self){
+//                    player.delegate = (id<AVAudioPlayerDelegate>)self;;
+//                    player.enableRate = YES;
+//                    [player prepareToPlay];
+//
+//                    NSLog(@"sound volume: %@", RCTNullIfNil(volume));
+//                    // set volume
+//                    player.volume = [volume floatValue];
+//
+//                    NSLog(@"sound loop: %@", loopSound);
+//                    // enable/disable loop
+//                    if ([loopSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
+//                        player.numberOfLoops = -1;
+//                    } else {
+//                        player.numberOfLoops = 0;
+//                    }
+//
+//                    [player play];
+//                }
+//            }
+//        }
     } @catch(NSException *exception){
         NSLog(@"%@", exception.reason);
     }
@@ -359,15 +359,14 @@ API_AVAILABLE(ios(10.0)) {
                 @"snooze_interval": [contentInfo.userInfo objectForKey:@"snooze_interval"]
             };
             
-            content.sound = UNNotificationSound.defaultSound;
-            // if([playSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
-            //     BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:soundName];
-            //     if(notEmpty != YES){
-            //         content.sound = UNNotificationSound.defaultSound;
-            //     } else {
-            //         content.sound = [UNNotificationSound soundNamed:soundName];
-            //     }
-            // }
+            if([playSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
+                BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:soundName];
+                if(notEmpty != YES){
+                    content.sound = UNNotificationSound.defaultSound;
+                } else {
+                    content.sound = [UNNotificationSound soundNamed:soundName];
+                }
+            }
             
             // Create the request object.
             UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:alarmId content:content trigger:trigger];
@@ -443,16 +442,15 @@ API_AVAILABLE(ios(10.0)) {
                 @"snooze_interval": [contentInfo.userInfo objectForKey:@"snooze_interval"]
             };
             
-            content.sound = UNNotificationSound.defaultSound;
-            // if([playSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
-            //     BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:soundName];
-            //     if(notEmpty != YES){
-            //         NSLog(@"use default sound");
-            //         content.sound = UNNotificationSound.defaultSound;
-            //     } else {
-            //         content.sound = [UNNotificationSound soundNamed:soundName];
-            //     }
-            // }
+            if([playSound isEqualToNumber: [NSNumber numberWithInt: 1]]) {
+                BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:soundName];
+                if(notEmpty != YES){
+                    NSLog(@"use default sound");
+                    content.sound = UNNotificationSound.defaultSound;
+                } else {
+                    content.sound = [UNNotificationSound soundNamed:soundName];
+                }
+            }
             
             // Create the request object.
             UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:alarmId content:content trigger:trigger];
@@ -519,15 +517,14 @@ RCT_EXPORT_METHOD(scheduleAlarm: (NSDictionary *)details resolver:(RCTPromiseRes
                 @"snooze_interval": details[@"snooze_interval"]
             };
             
-            content.sound = UNNotificationSound.defaultSound;
-            // if([details[@"play_sound"] isEqualToNumber: [NSNumber numberWithInt: 1]]) {
-            //     BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:details[@"sound_name"]];
-            //     if(notEmpty != YES){
-            //         content.sound = UNNotificationSound.defaultSound;
-            //     } else {
-            //         content.sound = [UNNotificationSound soundNamed:details[@"sound_name"]];
-            //     }
-            // }
+            if([details[@"play_sound"] isEqualToNumber: [NSNumber numberWithInt: 1]]) {
+                BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:details[@"sound_name"]];
+                if(notEmpty != YES){
+                    content.sound = UNNotificationSound.defaultSound;
+                } else {
+                    content.sound = [UNNotificationSound soundNamed:details[@"sound_name"]];
+                }
+            }
             
             // Create the request object.
             UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:alarmId content:content trigger:trigger];
@@ -589,15 +586,14 @@ RCT_EXPORT_METHOD(sendNotification: (NSDictionary *)details) {
                 @"schedule_type": @"once"
             };
             
-            content.sound = UNNotificationSound.defaultSound;
-            // if([details[@"play_sound"] isEqualToNumber: [NSNumber numberWithInt: 1]]) {
-            //     BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:details[@"sound_name"]];
-            //     if(notEmpty != YES){
-            //         content.sound = UNNotificationSound.defaultSound;
-            //     } else {
-            //         content.sound = [UNNotificationSound soundNamed:details[@"sound_name"]];
-            //     }
-            // }
+            if([details[@"play_sound"] isEqualToNumber: [NSNumber numberWithInt: 1]]) {
+                BOOL notEmpty = [RnAlarmNotification checkStringIsNotEmpty:details[@"sound_name"]];
+                if(notEmpty != YES){
+                    content.sound = UNNotificationSound.defaultSound;
+                } else {
+                    content.sound = [UNNotificationSound soundNamed:details[@"sound_name"]];
+                }
+            }
             
             // Create the request object.
             UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:alarmId content:content trigger:nil];
